@@ -47,6 +47,32 @@ final class ScreenshotE2ETests: E2EBaseCase {
         capture("11-locked")
     }
 
+    /// The two README pictures again in Simplified Chinese, for README.zh-CN.md.
+    func testReadmeScreensInChinese() throws {
+        app.launchEnvironment["ASKKEY_E2E_SCENARIO"] = "approval-screenshots"
+        app.launchEnvironment["ASKKEY_E2E_LANGUAGE"] = "zh-Hans"
+        app.launch()
+        _ = try waitForEvidence("approval-pending.json")
+        XCTAssertTrue(app.buttons["approval-details"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["approval-allow-once"].waitForExistence(timeout: 8))
+        capture("18-zh-approval-default", approval: true)
+        click("approval-deny")
+        _ = try waitForEvidence("approval-result.json")
+        app.terminate()
+
+        // The approval run left a saved credential, so the welcome page is past
+        // its first step; set it aside and open Agent access.
+        app.launchEnvironment["ASKKEY_E2E_SCENARIO"] = "screenshots-welcome"
+        app.launch()
+        moveManagementAboveDock()
+        XCTAssertTrue(app.buttons["welcome-later"].waitForExistence(timeout: 8))
+        click("welcome-later")
+        if app.buttons["unlock-management"].waitForExistence(timeout: 3) { click("unlock-management") }
+        click("sidebar-agent")
+        XCTAssertTrue(app.buttons["onboarding-review-codex"].waitForExistence(timeout: 8))
+        capture("19-zh-agent-access")
+    }
+
     func testPendingRequestsAndAccessRecords() throws {
         app.launchEnvironment["ASKKEY_E2E_SCENARIO"] = "approval-deny"
         app.launchEnvironment["ASKKEY_E2E_LANGUAGE"] = "en"
