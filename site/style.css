@@ -49,6 +49,15 @@ body {
 }
 
 img, video { display: block; max-width: 100%; height: auto; }
+/* Pictures on this site are part of the design, not content to save: no
+   long-press menu, no force-click preview and no dragging a copy off the
+   page. Clicks on a picture inside a link still reach the link. */
+img {
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
 a { color: inherit; }
 p { text-wrap: pretty; }
 code, pre { font-family: var(--mono); }
